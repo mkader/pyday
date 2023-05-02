@@ -45,7 +45,7 @@ FastAPI is a python framework designed specifically for building HTTP APIs.
         pip install -r requirements-dev.txt
         python -m pytest
 
-API unit test with pytest
+API unit test with pytest (test_api.py)
     import random
     from fastapi.testclient import TestClient
     from api.main import app
@@ -97,6 +97,12 @@ Property-based tests with schemathesis
             OR main.py
                 @app.get("/generate_name_qs", responses={404:{}})
 
+Through Visual Code, run unit test
+    Configure Python Tests
+    Select pytest pytest framework
+    select "tests" folder
+    "Run Tests"
+
 Proudctionizing FastAPI apps
     Gunicorn- won't work windows, it will work on unix
         It's a production-level server that can run multiple worker process
@@ -107,8 +113,61 @@ Proudctionizing FastAPI apps
             gunicorn==20.1.0
 
         Pip install -r requirements-dev.txt
-        pip install pywin32
         Use gunicorn to run FastAPI app using uvicorn worker:
             python -m gunicorn api.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000     
+    
+    Configuring gunicorn
+        Gunicorn can be configured with a gunicorn.conf.py file to adjust worker count based on CPU cores
+
+            # Gunicorn configuration file
+            # https://docs.gunicorn.org/en/stable/configure.html#configuration-file
+            # https://docs.gunicorn.org/en/stable/settings.html
+
+            import multiprocessing
+
+            max_requests = 1000
+            max_requests_jitter = 50
+            log_file = "-"
+            bind = "0.0.0.0:3100"
+            worker_class = "uvicorn.workers.UvicornWorker"
+            workers = (multiprocessing.cpu_count() * 2) + 1
+
+        Run command can be simplified to
+            cd api
+            python -m gunicorn main:app
+
+Hosting an HTTP API on Azure!
+    Hosting considerations
+        How much traffic do you expect?
+        How variable will the traffic be?
+        Do you need scale-to-zero?
+        What's your budget?
+        Is it public facing?
+        How will you manage API use?
+
+    AZure hosting options
+        Cloud       |           A           z           u           r           e         |
+        
+        Environment |   C   o   n  t    a  i   n ers    |   |  P        a           a   s |
+        
+                    |A zure K 8s|   | Container |           | Azure App | | Serverless | 
+                    Services        Management              Service
+                                    
+                                    | Azure Container |                   | Azuer     |  
+                                        Apps                             Functions
+    
+    Ways to deploy to Azure App Service
+        VS Code extension
+        Azure Portal (with Github integration)
+        Azure CLI
+        Azure Developer CLI with Bicep
+
+    Deployig to App Service with VS Code
+        VS code extension -> Search "Azure Tools" -> Install  "Azure Tools"
+        Select "Create resource" > "Create App Service Web App"
+            Enter a name
+            Select runtime stack (Pythong 3.11)
+            Select tier (Free - F1)
+        Select "Deploy" and select "api" as the path to deploy.     
 
 https://github.com/pamelafox        
