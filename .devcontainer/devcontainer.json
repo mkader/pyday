@@ -1,0 +1,42 @@
+{
+    "name": "Azure Developer CLI",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "VARIANT": "3.11-bullseye"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.vscode-node-azure-pack",
+                "ms-azuretools.vscode-bicep",
+                "ms-python.python",
+                "ms-python.black-formatter"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "[python]": {
+                    "editor.formatOnSave": true,
+                    "editor.codeActionsOnSave": {
+                        "source.fixAll": true
+                    },
+                    "editor.defaultFormatter": "ms-python.black-formatter"
+                },
+                "python.formatting.provider": "black",
+                "files.exclude": {
+                    "**/*.coverage": true,
+                    ".ruff_cache": true,
+                    ".pytest_cache": true
+                }
+            }
+        }
+    },
+    "forwardPorts": [
+        8000,
+        7071
+    ],
+    "postCreateCommand": "pip3 install --user -r requirements.txt",
+    "remoteUser": "vscode"
+}
