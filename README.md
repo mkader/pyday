@@ -178,6 +178,19 @@ Hosting an HTTP API on Azure!
                 python -m gunicorn main:app
             Save and wait for server to restart.
         Or use the Azure CLI
-            az webapp config set --resource-group <resource-group> --name <app-name> --startup-file "python -m gunicorn main:app"        
+            az webapp config set --resource-group <resource-group> --name <app-name> --startup-file "python -m gunicorn main:app"    
+
+More API Examples
+    FastAPI + API Management
+        Azure API Management provides features of a public API: subscription keys, rate limiting, IP blocking, etc.
+        https://github.com/pamelafox/fastapi-azure-function-apim
+
+    FastAPI + CDN
+        Azure CDN provides a global netowrk of servers to cache your API responses.
+        https://github.com/pamelafox/staticmaps-function
+
+    FastAPI + scikitleran
+        A parameterized API based on a sklearn model.
+        https://github.com/pamelafox/scikitlearn-model-to-fastapi-app
 
 https://github.com/pamelafox        
