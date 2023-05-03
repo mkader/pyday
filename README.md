@@ -170,4 +170,14 @@ Hosting an HTTP API on Azure!
             Select tier (Free - F1)
         Select "Deploy" and select "api" as the path to deploy.     
 
+    Customizing App Service for FastAPI
+        App Service doesn't yet know hot to automatically run FastAPI apps, so we must tell it.
+        Either use the portal
+            Select "Settings" > "Configuration" in left nav, then select "General settings" tab.
+            In "Startup Command" field, enter
+                python -m gunicorn main:app
+            Save and wait for server to restart.
+        Or use the Azure CLI
+            az webapp config set --resource-group <resource-group> --name <app-name> --startup-file "python -m gunicorn main:app"        
+
 https://github.com/pamelafox        

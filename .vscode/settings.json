@@ -3,5 +3,7 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "appService.defaultWebAppToDeploy": "/subscriptions/f6964e2d-6e03-4e96-89cc-7ce66be1a66c/resourceGroups/mak-vse-rg/providers/Microsoft.Web/sites/mak-app-srv-web-app-fastapi",
+    "appService.deploySubpath": "api"
 }
