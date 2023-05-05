@@ -26,12 +26,12 @@ FastAPI - https://fastapi.tiangolo.com/
 
     It contains a built-in OpenAPI and JSON Schema generator, which allows to generate API documentation and client libraries. Additionally, It has built-in support for testing and debugging your API.
 
-FastAPI is a python framework designed specifically for building HTTP APIs.
-    Fast to build and fast to execute
-    Relies on python types (via pydnatic)
-    Auto-generated documentation (via Swagger-UI)
-    Based on the OpenAPI specifications.
-    Supports passing parameters in the path, cookies, headers or body.
+    FastAPI is a python framework designed specifically for building HTTP APIs.
+        Fast to build and fast to execute
+        Relies on python types (via pydnatic)
+        Auto-generated documentation (via Swagger-UI)
+        Based on the OpenAPI specifications.
+        Supports passing parameters in the path, cookies, headers or body.
 
     Running FastAPI locally
         Put code in api/main.py
@@ -45,46 +45,46 @@ FastAPI is a python framework designed specifically for building HTTP APIs.
                                http://127.0.0.1:8000/redoc
                                http://127.0.0.1:8000/openapi.json 
 
-    Testing FastAPI apps
-        Configuring pytest and coverage
-            Create a requirements-dev.txt file:
-                -r api/requirements.txt
-                fastapi[all]
-                pytest
-                pytest-cov
-                coverage
+Testing FastAPI apps
+    Configuring pytest and coverage
+        Create a requirements-dev.txt file:
+            -r api/requirements.txt
+            fastapi[all]
+            pytest
+            pytest-cov
+            coverage
 
-                "-r api/requirements.txt" flag,install the required Python packages listed in the api/requirements.txt file.
-                "fastapi[all]" package, installs FastAPI with all dependencies (Uvicorn, Pydantic and other libraries)
-                "pytest" package is a testing framework that allows you to write and run automated tests for your Python code.
-                "pytest-cov" package is a plugin for pytest that provides code coverage reports for your tests.
-                "coverage" package is a tool that measures code coverage during Python program execution.
+            "-r api/requirements.txt" flag,install the required Python packages listed in the api/requirements.txt file.
+            "fastapi[all]" package, installs FastAPI with all dependencies (Uvicorn, Pydantic and other libraries)
+            "pytest" package is a testing framework that allows you to write and run automated tests for your Python code.
+            "pytest-cov" package is a plugin for pytest that provides code coverage reports for your tests.
+            "coverage" package is a tool that measures code coverage during Python program execution.
 
-            Configure inside pyproject.toml
-                [tool.pytest.ini_options]
-                addopts = "-ra --cov api"
-                testpaths = [ "tests" ]
-                pythonpath = ['.']    
+        Configure inside pyproject.toml
+            [tool.pytest.ini_options]
+            addopts = "-ra --cov api"
+            testpaths = [ "tests" ]
+            pythonpath = ['.']    
 
-                pyproject.toml is a configuration file used by modern Python projects that adopt the poetry build tool. It is similar to other configuration files like setup.cfg, setup.py, or requirements.txt, but with additional features and functionalities.
-                    "[tool.pytest.ini_options]" - contains additional configuration options to pass to pytest, a popular Python testing framework.
-                    "addopts" - specifies additional command-line options to pass to pytest. 
-                        "-ra" tells pytest to output all test results
-                        "--cov api" enables test coverage reporting for the api module.
-                    "testpaths" -specifies directories tests (containing all tests).
-                    "pythonpath" - specifies which directories to include in the Python module search path. In this case, . (the current directory) is included, so that modules in the current directory can be imported and used in the tests.
+            pyproject.toml is a configuration file used by modern Python projects that adopt the poetry build tool. It is similar to other configuration files like setup.cfg, setup.py, or requirements.txt, but with additional features and functionalities.
+                "[tool.pytest.ini_options]" - contains additional configuration options to pass to pytest, a popular Python testing framework.
+                "addopts" - specifies additional command-line options to pass to pytest. 
+                    "-ra" tells pytest to output all test results
+                    "--cov api" enables test coverage reporting for the api module.
+                "testpaths" -specifies directories tests (containing all tests).
+                "pythonpath" - specifies which directories to include in the Python module search path. In this case, . (the current directory) is included, so that modules in the current directory can be imported and used in the tests.
 
-        Create folde and file - "tests\test_api.py"        
-        pip install -r requirements-dev.txt
-        python -m pytest
-            - Name          Stmts   Miss  Cover
-            ---------------------------------
-            api/main.py      19      9    53%
-            - not giving missing lines details
-        python -m pytest --cov-report=html
-            - it will create folder htmlcov
-            - go to the folder, run python3 -m http.server 8000 --bind 127.0.0.1
-            - browse to see the coverage report https://127.0.0.1/htmlcov/index.html
+    Create folde and file - "tests\test_api.py"        
+    pip install -r requirements-dev.txt
+    python -m pytest
+        - Name          Stmts   Miss  Cover
+        ---------------------------------
+        api/main.py      19      9    53%
+        - not giving missing lines details
+    python -m pytest --cov-report=html
+        - it will create folder htmlcov
+        - go to the folder, run python3 -m http.server 8000 --bind 127.0.0.1
+        - browse to see the coverage report https://127.0.0.1/htmlcov/index.html
 
 Property-based tests with schemathesis
     Property-based testing is a type of testing approach that focuses on generating a large number of random inputs to test functions and APIs. Instead of manually creating test, the testing framework generates automatically, based on predefined properties.
@@ -131,10 +131,7 @@ Property-based tests with schemathesis
                 @app.get("/generate_name_qs", responses={404:{}})
 
 Through Visual Code, run unit test
-    Configure Python Tests
-    Select pytest pytest framework
-    select "tests" folder
-    "Run Tests"
+    Configure Python Tests -> Select pytest pytest framework -> select "tests" folder -> "Run Tests"
 
 Proudctionizing FastAPI apps
     Gunicorn (Green Unicorn), is a Python Web Server Gateway Interface (WSGI) HTTP server.
@@ -195,7 +192,7 @@ Hosting an HTTP API on Azure!
         How will you manage API use?
 
     AZure hosting options
-        ![alt text](image_file_path)
+        ![alt text](azure.PNG)
         Cloud       |           A           z           u           r           e         |
         
         Environment |   C   o   n  t    a  i   n ers    |   |  P        a           a   s |
