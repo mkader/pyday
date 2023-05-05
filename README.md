@@ -190,18 +190,9 @@ Hosting an HTTP API on Azure!
         What's your budget?
         Is it public facing?
         How will you manage API use?
-
-    AZure hosting options
-        ![alt text](azure.PNG)
-        Cloud       |           A           z           u           r           e         |
-        
-        Environment |   C   o   n  t    a  i   n ers    |   |  P        a           a   s |
-        
-                    |A zure K 8s|   | Container |           | Azure App | | Serverless | 
-                    Services        Management              Service
-                                    
-                                    | Azure Container |                   | Azuer     |  
-                                        Apps                             Functions
+    
+    Azure hosting options
+   ![alt text](azure.PNG)
     
     Ways to deploy to Azure App Service
         VS Code extension
