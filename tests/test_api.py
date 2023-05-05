@@ -7,13 +7,11 @@ from api.main import app
 
 client = TestClient(app)
 
-#Test 1
 def test_generate_name():
     response = client.get("/generate_name")
     assert response.status_code == 200
     assert response.json()["name"] in ["Abdul", "Mohideen", "Kader", "Noor", "Iqbal"] 
 
-#Test 2
 import random
 def test_generate_name_max_length():
     random.seed(0)
@@ -36,4 +34,3 @@ def test_generate_name_max_length_error():
     random.seed(0)
     response = client.get("/generate_name_qs?max_length=2")
     assert response.status_code == 404
-   

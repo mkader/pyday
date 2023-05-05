@@ -1,31 +1,49 @@
-Processing APIs in python use urllib, requests or urllib3
+https://diataxis.fr/ - A systematic framework for technical documentation authoring.
+
+GitHub Codespaces is a cloud-based development environment that enables developers to write, build, and debug their code directly from their web browser.
+
 Free APIs to try: Zippopotamus, Sunrise/Sunset, Reddit
-pip install urllib3, rich
 
-PoolManager is a class in the urllib3 library used to manage connection pools for one or more HTTP connections. 
-It is used to create an instance of an HTTP connection pool with a specified number of connections. 
-You can use this instance to send multiple requests to the same host and reuse the same connection for each request, 
-which can result in faster response times and reduced overhead.
+pip install urllib3 rich fastapi "uvicorn[standard]"
 
-rich is a Python library for rich text and beautiful formatting in the terminal. 
-It provides various features such as syntax highlighting, progress bars, tables, markdown, and more. 
-It aims to make it easier to create beautiful and informative console output. It supports both Python 3.6+ and PyPy3.
+Processing APIs in python use urllib, requests or urllib3
+
+    PoolManager is a class in the urllib3 library used to manage connection pools for one or more HTTP connections. 
+    It is used to create an instance of an HTTP connection pool with a specified number of connections. 
+    You can use this instance to send multiple requests to the same host and reuse the same connection for each request, 
+    which can result in faster response times and reduced overhead.
+
+    rich is a Python library for rich text and beautiful formatting in the terminal. 
+    It provides various features such as syntax highlighting, progress bars, tables, markdown, and more. 
+    It aims to make it easier to create beautiful and informative console output. It supports both Python 3.6+ and PyPy3.
+
+FastAPI - https://fastapi.tiangolo.com/
+    FastAPI is a web framework for building APIs with Python 3.7+. It is designed to be easy, fast and to provide high performance.
+
+    It uses the Python type hinting system to validate data types and function parameters, which makes it write and maintain type-safe APIs.
+
+    FastAPI is a lightweight ASGI (Asynchronous Server Gateway Interface) framework, compatible with a wide range of ASGI servers such as Uvicorn and Hypercorn, which provide high-performance web servers.
+
+    It contains a built-in OpenAPI and JSON Schema generator, which allows to generate API documentation and client libraries. Additionally, It has built-in support for testing and debugging your API.
 
 FastAPI is a python framework designed specifically for building HTTP APIs.
     Fast to build and fast to execute
     Relies on python types (via pydnatic)
     Auto-generated documentation (via Swagger-UI)
     Based on the OpenAPI specifications.
+    Supports passing parameters in the path, cookies, headers or body.
 
     Running FastAPI locally
         Put code in api/main.py
-        Install requiremets: Pip install fastapi, "uvicorn[standard]"
         Run the server: uvicorn  api.main:app --reload --port=8000
+            api.main:app specifies the module and the variable name of the application that needs to be run.
+            --reload enables hot-reloading, any code changes, the server will restart automatically.
+            --port=8000, which the server will be listening for incoming requests.
+        
         Try the API and docs : http://127.0.0.1:8000/generate_name
                                http://127.0.0.1:8000/docs   
+                               http://127.0.0.1:8000/redoc
                                http://127.0.0.1:8000/openapi.json 
-
-    FastAPI also supports passing parameters in the path, cookies, headers or body.
 
     Testing FastAPI apps
         Configuring pytest and coverage
@@ -35,30 +53,51 @@ FastAPI is a python framework designed specifically for building HTTP APIs.
                 pytest
                 pytest-cov
                 coverage
+
+                "-r api/requirements.txt" flag,install the required Python packages listed in the api/requirements.txt file.
+                "fastapi[all]" package, installs FastAPI with all dependencies (Uvicorn, Pydantic and other libraries)
+                "pytest" package is a testing framework that allows you to write and run automated tests for your Python code.
+                "pytest-cov" package is a plugin for pytest that provides code coverage reports for your tests.
+                "coverage" package is a tool that measures code coverage during Python program execution.
+
             Configure inside pyproject.toml
                 [tool.pytest.ini_options]
                 addopts = "-ra --cov api"
                 testpaths = [ "tests" ]
                 pythonpath = ['.']    
-        Create tests folder
-            Create  test_api.py        
+
+                pyproject.toml is a configuration file used by modern Python projects that adopt the poetry build tool. It is similar to other configuration files like setup.cfg, setup.py, or requirements.txt, but with additional features and functionalities.
+                    "[tool.pytest.ini_options]" - contains additional configuration options to pass to pytest, a popular Python testing framework.
+                    "addopts" - specifies additional command-line options to pass to pytest. 
+                        "-ra" tells pytest to output all test results
+                        "--cov api" enables test coverage reporting for the api module.
+                    "testpaths" -specifies directories tests (containing all tests).
+                    "pythonpath" - specifies which directories to include in the Python module search path. In this case, . (the current directory) is included, so that modules in the current directory can be imported and used in the tests.
+
+        Create folde and file - "tests\test_api.py"        
         pip install -r requirements-dev.txt
         python -m pytest
-
-API unit test with pytest (test_api.py)
-    import random
-    from fastapi.testclient import TestClient
-    from api.main import app
-    def test_generate_name():
-        with TestClient(app) as client:
-            random.seed(123)
-            response = client.get("/generate_name")
-            assert response.status_code == 200
-            assert response.json() == {"name" : "Abdul"}
+            - Name          Stmts   Miss  Cover
+            ---------------------------------
+            api/main.py      19      9    53%
+            - not giving missing lines details
+        python -m pytest --cov-report=html
+            - it will create folder htmlcov
+            - go to the folder, run python3 -m http.server 8000 --bind 127.0.0.1
+            - browse to see the coverage report https://127.0.0.1/htmlcov/index.html
 
 Property-based tests with schemathesis
+    Property-based testing is a type of testing approach that focuses on generating a large number of random inputs to test functions and APIs. Instead of manually creating test, the testing framework generates automatically, based on predefined properties.
+
+    Schemathesis is a Python library for property-based testing of APIs. It automatically generates API test cases based on their OpenAPI schema (Swagger). IT generates a large number of random requests to the API and checking that the responses match the expected schema.
+
+    Schemathesis also has various features like test coverage analysis, response time tracking, and compatibility with different Python testing frameworks like pytest.
+
+    By using schemathesis, developers can perform thorough testing of their APIs with minimal manual effort, which can lead to more reliable and bug-free code. It's useful for ensuring that your API is robust and can handle a variety of inputs and outputs.
+
     Add schemathesis to requirments-dev.txt
-    Generaete tests based on the OpenAPI Spec:
+        
+    Generaete tests based on the OpenAPI Spec: ("tests\property_based.py")
         import schemathesis
         from api.main import app
         schema = schemathesis.from_asqi("/openapi.json",app)
@@ -74,17 +113,11 @@ Property-based tests with schemathesis
         pytest -k test_api   
         pytest -v tests/property_based.py 
 
-    Error, when i run pytest -v tests/property_based.py  
+        Error, when i run pytest -v tests/property_based.py  
 
             E       schemathesis.exceptions.CheckFailed: 
-            E       
-            E       1. Received a response with a status code, which is not defined in the 
-            schema: 404
-            E       
+            E       1. Received a response with a status code, which is not defined in the schema: 404
             E       Declared status codes: 200, 422
-            E       
-            E       ----------
-            E       
             E       Response status: 404
             E       Response payload: `{"detail":"No names available"}`    
 
@@ -104,6 +137,11 @@ Through Visual Code, run unit test
     "Run Tests"
 
 Proudctionizing FastAPI apps
+    Gunicorn (Green Unicorn), is a Python Web Server Gateway Interface (WSGI) HTTP server.
+        It's used in popular Python web frameworks (Flask, Django, Pyramid, and Bottle). It can handle requests from multiple clients simultaneously by pre-forking worker processes to handle each request, resulting in efficient resource utilization.
+
+        It's easy use and configure (including logging, worker processes, worker class, timeout, and more). It can also be integrated with a wide range of deployment tools, such as Docker, Kubernetes, and Heroku.
+
     Gunicorn- won't work windows, it will work on unix
         It's a production-level server that can run multiple worker process
 
@@ -115,9 +153,12 @@ Proudctionizing FastAPI apps
         Pip install -r requirements-dev.txt
         Use gunicorn to run FastAPI app using uvicorn worker:
             python -m gunicorn api.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000     
+
+            This command starts a Gunicorn server to run a Python web application located in api/main.py, using the FastAPI app instance app. The server will run with 4 worker processes to handle incoming requests, using the uvicorn worker class UvicornWorker to support asynchronous handling of requests. The server will listen on all available network interfaces (0.0.0.0) on port 8000.
+            "python -m gunicorn" invokes the Gunicorn server using the python interpreter.
     
     Configuring gunicorn
-        Gunicorn can be configured with a gunicorn.conf.py file to adjust worker count based on CPU cores
+        Gunicorn can be configured with a "gunicorn.conf.py" file to adjust worker count based on CPU cores
 
             # Gunicorn configuration file
             # https://docs.gunicorn.org/en/stable/configure.html#configuration-file
@@ -131,6 +172,14 @@ Proudctionizing FastAPI apps
             bind = "0.0.0.0:3100"
             worker_class = "uvicorn.workers.UvicornWorker"
             workers = (multiprocessing.cpu_count() * 2) + 1
+
+        In this particular example, we see the following configurations:
+            max_requests: sets the maximum number of requests a worker will process before restarting
+            max_requests_jitter: sets the maximum jitter to add to the max_requests value to reduce the likelihood of all workers restarting at the same time
+            log_file: sets the location for the Gunicorn server logs, in this case, logs will be sent to standard output (-)
+            bind: sets the address and port on which Gunicorn will listen for connections
+            worker_class: sets the worker class for handling requests, in this case, it's using UvicornWorker, a worker for the Uvicorn ASGI server
+            workers: sets the number of worker processes for handling incoming requests. The number of workers is calculated based on the number of available CPUs, adding 1 and then multiplying by 2.
 
         Run command can be simplified to
             cd api
@@ -146,6 +195,7 @@ Hosting an HTTP API on Azure!
         How will you manage API use?
 
     AZure hosting options
+        ![alt text](image_file_path)
         Cloud       |           A           z           u           r           e         |
         
         Environment |   C   o   n  t    a  i   n ers    |   |  P        a           a   s |
