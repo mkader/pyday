@@ -1,19 +1,38 @@
 {
-    "name": "Azure Developer CLI",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "args": {
-            "VARIANT": "3.11-bullseye"
-        }
-    },
+    "name": "python-db-copilot",
+	"dockerComposeFile": "docker-compose.yaml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"forwardPorts": [5432],
+	"portsAttributes": {
+		"5432": {"label": "PostgreSQL port", "onAutoForward": "silent"}
+	},
+    
+    //"name": "Azure Developer CLI",
+    //"build": {
+    //    "dockerfile": "Dockerfile",
+    //    "args": {
+    //        "VARIANT": "3.11-bullseye"
+    //    }
+    //},
+
+    //"forwardPorts": [
+    //    8000,
+    //    7071
+    //],
+    
     "customizations": {
         "vscode": {
             "extensions": [
                 "ms-vscode.vscode-node-azure-pack",
                 "ms-azuretools.vscode-bicep",
                 "ms-python.python",
-                "ms-python.black-formatter"
-            ],
+                "ms-python.black-formatter",
+                "ms-python.vscode-pylance",
+				"charliermarsh.ruff",
+				"mtxr.sqltools",
+				"mtxr.sqltools-driver-pg"
+	        ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.linting.enabled": true,
@@ -25,6 +44,29 @@
                     "editor.defaultFormatter": "ms-python.black-formatter"
                 },
                 "python.formatting.provider": "black",
+                "sqltools.connections": [
+					{
+						"name": "Local database",
+						"driver": "PostgreSQL",
+						"server": "localhost",
+						"port": 5432,
+						"database": "postgres",
+						"username": "admin",
+						"password": "LocalPasswordOnly"
+					},
+					{
+						"name": "Azure database",
+						"driver": "PostgreSQL",
+						"server": "<HOSTNAME>.postgres.database.azure.com",
+						"port": 5432,
+						"database": "postgres",
+						"username": "<USERNAME>",
+						"askForPassword": true,
+						"pgOptions": {
+							"ssl": true
+						}
+					}
+				],
                 "files.exclude": {
                     "**/*.coverage": true,
                     ".ruff_cache": true,
@@ -33,10 +75,7 @@
             }
         }
     },
-    "forwardPorts": [
-        8000,
-        7071
-    ],
+    
     "postCreateCommand": "pip3 install --user -r requirements.txt",
     "remoteUser": "vscode"
 }

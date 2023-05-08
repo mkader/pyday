@@ -1,6 +1,9 @@
-ARG VARIANT=bullseye
-FROM --platform=amd64 mcr.microsoft.com/devcontainers/python:${VARIANT}
-RUN export DEBIAN_FRONTEND=noninteractive \
-     && apt-get update && apt-get install -y xdg-utils \
+REM Potsgras SQL Docker
+ARG IMAGE=bullseye
+FROM mcr.microsoft.com/devcontainers/${IMAGE}
+
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends postgresql-client \
      && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL https://aka.ms/install-azd.sh | bash
