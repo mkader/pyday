@@ -40,7 +40,7 @@
                     "editor.formatOnSave": true,
                     "editor.codeActionsOnSave": {
                         "source.fixAll": true
-                    },
+                    }
                 },
                 "python.formatting.provider": "black",
                 "sqltools.connections": [
