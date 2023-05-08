@@ -206,17 +206,50 @@ Hosting an HTTP API on Azure!
             Enter a name
             Select runtime stack (Pythong 3.11)
             Select tier (Free - F1)
-        Select "Deploy" and select "api" as the path to deploy.     
+        Select "Deploy" and select "api" as the path to deploy.   
 
-    Customizing App Service for FastAPI
-        App Service doesn't yet know hot to automatically run FastAPI apps, so we must tell it.
-        Either use the portal
-            Select "Settings" > "Configuration" in left nav, then select "General settings" tab.
-            In "Startup Command" field, enter
-                python -m gunicorn main:app
-            Save and wait for server to restart.
-        Or use the Azure CLI
-            az webapp config set --resource-group <resource-group> --name <app-name> --startup-file "python -m gunicorn main:app"    
+    https://github.com/microsoft/Oryx
+        Oryx is a build tool developed by MS that is designed to simplify the process of building and deploying web applications to Azure App Service. Oryx supports a variety of programming languages and platforms, including .NET, Node.js, Python, PHP, and Java.
+
+        When you deploy your application to Azure App Service using Oryx, here is what happens:
+            Oryx scans your application's source code to detect the programming language and platform used by your application. It uses this information to select the appropriate buildpack for your application.
+            
+            The buildpack contains the tools and scripts needed to build and package your application for deployment. Oryx uses the selected buildpack to create a runtime environment for your application.
+
+            Oryx compiles and packages your application according to the requirements of the buildpack. This may involve running commands such as npm install to install dependencies, compiling source code into binaries, or creating an executable JAR file.
+
+            Once the application has been compiled and packaged, Oryx creates a Docker image that contains your application and its runtime environment. This Docker image is then deployed to Azure App Service.
+            
+            Throughout the deployment process, Oryx performs various optimizations to ensure that project is deployed efficiently and effectively. For example, Oryx uses caching to speed up subsequent builds and deploys, and can automatically detect changes in your project's source code and dependencies to trigger new builds.
+
+            Overall, using Oryx to deploy your project to Azure App Service simplifies the deployment process and ensures that your project is running in a consistent environment optimized for its specific requirements.      
+
+    When you deploy a Python project to Azure App Service using Oryx, the following happens:
+        Oryx detects and selects the appropriate buildpack for your project.
+
+        Oryx installs the required Python runtime and dependencies based on the requirements.txt. It may also run other setup tasks such as creating a virtual environment for your project.
+
+        Oryx builds your Python project and packages it as a wheel (.whl) or egg file, which can be installed in another environment. If your project includes static files or other assets, Oryx also collects these files and prepares them for deployment.
+
+        Oryx creates a Docker image that contains your Python project, its dependencies, and any assets or static files. This Docker image is then deployed to Azure App Service.
+
+        Once the Docker image is deployed, Azure App Service starts a container based on the image and your Python project is up and running.
+        
+    When you deploy to app service, MS tool oryx builds a Docerr image, it also does try to auto start an app if it's Django or flask but it doesn't understand fast API, we will tell it how to start a fast API app.
+        Customizing App Service for FastAPI
+            App Service doesn't yet know how to automatically run FastAPI apps, so we must tell it.
+            Either use the portal
+                Select "Settings" > "Configuration" in left nav, then select "General settings" tab.
+                In "Startup Command" field, enter
+                    python3 -m uvicorn main:app --host 0.0.0.0
+                        python3 -m gunicorn main:app (it's not working)
+                Save and wait for server to restart.
+            Or use the Azure CLI
+                az webapp config set --resource-group <resource-group> --name <app-name> --startup-file "python -m gunicorn main:app"    
+
+    ERROR: If you see error  ":( Application Error ..", 
+        Tried to  change the service plan to B2, plan Free F1 or Basic B1 won't work - Still Error
+        Then change the command to "python3 -m uvicorn main:app --host 0.0.0.0" - it works 
 
 More API Examples
     FastAPI + API Management
@@ -231,4 +264,6 @@ More API Examples
         A parameterized API based on a sklearn model.
         https://github.com/pamelafox/scikitlearn-model-to-fastapi-app
 
-https://github.com/pamelafox        
+![alt text](fastapi_azure.PNG)
+
+Cloud Database for Web Apps  with Django
