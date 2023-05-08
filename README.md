@@ -278,100 +278,90 @@ Cloud Database for Web Apps  with Django
     Django
     Django apps on Azure
 
-Dockerfile
-    ARG IMAGE=bullseye
-    FROM mcr.microsoft.com/devcontainers/${IMAGE}
+    Dockerfile
+        ARG IMAGE=bullseye =>The bullseye image is based on Debian 11, which is a popular Linux distribution.
+        FROM mcr.microsoft.com/devcontainers/${IMAGE} => The bullseye Docker image from the MS Container Registry for development containers. 
+        ENV PYTHONUNBUFFERED 1 => Python output is unbuffered and sent directly to the console, which can be helpful when debugging applications.
+        RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \ => used to prevent prompts from appearing during the installation process.
+            && apt-get -y install --no-install-recommends postgresql-client \ =>installs the client package using apt-get, provides the psql command-line tool. 
+            && apt-get clean -y && rm -rf /var/lib/apt/lists/* => clean up the package cache and remove unnecessary files to reduce the size of the Docker image.
 
-    ENV PYTHONUNBUFFERED 1
+        The provided YAML file is used to configure a Docker Compose environment for a PostgreSQL database. Here is an overview of what the YAML file contains:
 
-    RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-        && apt-get -y install --no-install-recommends postgresql-client \
-        && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-    
-    The bullseye Docker image from the MS Container Registry for development containers (mcr.../devcontainers/${IMAGE}). The bullseye image is based on Debian 11, which is a popular Linux distribution.
-
-    The PYTHONUNBUFFERED environment variable is set to 1. This ensures that Python output is unbuffered and sent directly to the console, which can be helpful when debugging applications.
-
-    The RUN command installs the postgresql-client package using apt-get. This package provides the psql command-line tool, which can be used to interact with PostgreSQL databases. The export DEBIAN_FRONTEND=noninteractive command is used to prevent prompts from appearing during the installation process.
-
-    The && apt-get clean -y && rm -rf /var/lib/apt/lists/* command is used to clean up the package cache and remove unnecessary files to reduce the size of the Docker image.
-
-
-    The provided YAML file is used to configure a Docker Compose environment for a PostgreSQL database. Here is an overview of what the YAML file contains:
-
-docker-compose.yaml
-    services:
-        app:
-            build:
-                context: ..
-                dockerfile: .devcontainer/Dockerfile
-                args:
-                    IMAGE: python:3.11
+    docker-compose.yaml
+        services: => This defines two services - app and db.
+            app:
+                build:
+                    context: ..
+                    dockerfile: .devcontainer/Dockerfile
+                    args:
+                        IMAGE: python:3.11
+                    volumes:
+                        - ..:/workspace:cached
+                    # Overrides default command so things don't shut down after the process ends.
+                    command: sleep infinity
+                    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+                    network_mode: service:db
+             The app service builds the Docker image from the dockerfile using the Python version. 
+             The volumes section mounts the parent directory (..) of the .devcontainer directory to the /workspace directory in the container, 
+             allowing the local code changes to be reflected in the container. 
+             The command section keeps the container running indefinitely, and network_mode section sets the network mode to be the same as the db service, 
+             allowing them to communicate with each other.       
+           db:
+                image: postgres:latest
+                restart: unless-stopped
                 volumes:
-                    - ..:/workspace:cached
-                # Overrides default command so things don't shut down after the process ends.
-                command: sleep infinity
-                # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-                network_mode: service:db
-       db:
-            image: postgres:latest
-            restart: unless-stopped
-            volumes:
-                - postgres-data:/var/lib/postgresql/data
-            environment:
-                POSTGRES_DB: postgres
-                POSTGRES_USER: admin
-                POSTGRES_PASSWORD: LocalPasswordOnly
+                    - postgres-data:/var/lib/postgresql/data
+                environment:
+                    POSTGRES_DB: postgres
+                    POSTGRES_USER: admin
+                    POSTGRES_PASSWORD: LocalPasswordOnly
+                # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
+                # (Adding the "ports" property to this file will not forward from a Codespace.)
+            The db service uses the latest PostgreSQL image from Docker Hub,
+            and volumes section mounts the postgres-data volume to the /var/lib/postgresql/data directory in the container. 
+            The environment section sets the POSTGRES_DB, USER, PASSWORD env variables, which are used to create a new PostgreSQL database and user.
+        volumes:
+            postgres-data: => 
+            A named volume called postgres-data, which can be used to persist data across container restarts. 
+            Any data that is stored in the /var/lib/postgresql/data directory in the db service will be persisted in this volume.
 
-            # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-            # (Adding the "ports" property to this file will not forward from a Codespace.)
-    volumes:
-        postgres-data:
+    devcontainer.json -  is a configuration file used by VSC to define a development container for a project. 
+        It specifies the development environment, including the Docker image to use, the container configuration, and the extensions to install in the container.
+        
+        Configuration needed to work with the Docker files:
+            "name": "python-db-copilot",  => Sets the name of the development container to python-db-copilot.
+            "dockerComposeFile": "docker-compose.yaml", => Specifies the Docker Compose file to use when building the dev container.
+            "service": "app", => Specifies which service in the Docker Compose file to use as the main dev environment.
+            "workspaceFolder": "/workspace", => Specifies the workspace folder in the container that will be mapped to the local 
+                                                project directory.
+            "forwardPorts": [5432], => Specifies which ports to forward from the container to the local machine. 
+                                       In this case, it forwards port 5432, which is the default port for PostgreSQL.
+            "portsAttributes": {
+                "5432": {"label": "PostgreSQL port", "onAutoForward": "silent"}
+            }, => Provides additional attributes for the forwarded port. In this case, a label to identify the forwarded port and
+                  sets the onAutoForward attribute to "silent", which means that VSC Code will automatically forward the port without prompting the user.
 
-    This defines two services - app and db.
+        Installing extensions:
+            "ms-python.python", => Official Python extension for VSC, it provides features such as linting, debugging, 
+                                    code completion for Python.
+            "ms-python.vscode-pylance", => An optional language server for Python that provides more advanced type 
+                                        checking and autocomplete features.
+            "charliermarsh.ruff", => This extension provides support for the Ruff database migration tool.
+            "ms-python.black-formatter", =>  This extension provides support for the Black code formatter for Python.
+            "mtxr.sqltools", => General-purpose SQL extension that provides features(syntax highlighting, code completion, and database management.)
+            "mtxr.sqltools-driver-pg", => This is a PostgreSQL driver for the SQL Tools extension.
+            "ms-vscode.vscode-node-azure-pack" => Provides support for developing and deploying Node.js applications to Azure.
 
-        The app service builds the Docker image from the dockerfile using the Python version. The volumes section mounts the parent directory (..) of the .devcontainer directory to the /workspace directory in the container, allowing the local code changes to be reflected in the container. The command section keeps the container running indefinitely, and network_mode section sets the network mode to be the same as the db service, allowing them to communicate with each other.
+        Configuring SQLTools extension:
+            "sqltools.connections": [
+                {
+                    "name": "Local database",
+                    "driver": "PostgreSQL",
+                    "server": "localhost",
+                    "port": 5432,
+                    "database": "postgres",
+                    "username": "admin",
+                    "password": "LocalPasswordOnly"
+                }
 
-        The db service uses the latest PostgreSQL image from Docker Hub, and volumes section mounts the postgres-data volume to the /var/lib/postgresql/data directory in the container. The environment section sets the POSTGRES_DB, POSTGRES_USER, and POSTGRES_PASSWORD environment variables, which are used to create a new PostgreSQL database and user.
-
-        This defines a named volume called postgres-data, which can be used to persist data across container restarts. Any data that is stored in the /var/lib/postgresql/data directory in the db service will be persisted in this volume.
-
-devcontainer.json is a configuration file used by Visual Studio Code to define a development container for a project. It specifies the development environment, including the Docker image to use, the container configuration, and the extensions to install in the container.
-
-devcontainer.json: Top level config
-    Configuration needed to work with the Docker files:
-        "name": "python-db-copilot",  => Sets the name of the development container to python-db-copilot.
-        "dockerComposeFile": "docker-compose.yaml", => Specifies the Docker Compose file to use when building the dev container.
-        "service": "app", => Specifies which service in the Docker Compose file to use as the main dev environment.
-        "workspaceFolder": "/workspace", => Specifies the workspace folder in the container that will be mapped to the local 
-                                            project directory.
-        "forwardPorts": [5432], => Specifies which ports to forward from the container to the local machine. 
-                                   In this case, it forwards port 5432, which is the default port for PostgreSQL.
-        "portsAttributes": {
-            "5432": {"label": "PostgreSQL port", "onAutoForward": "silent"}
-        }, => Provides additional attributes for the forwarded port. In this case, a label to identify the forwarded port and
-              sets the onAutoForward attribute to "silent", which means that VSC Code will automatically forward the port without prompting the user.
-
-    Installing extensions:
-        "ms-python.python", => Official Python extension for VSC, it provides features such as linting, debugging, 
-                                code completion for Python.
-        "ms-python.vscode-pylance", => An optional language server for Python that provides more advanced type 
-                                    checking and autocomplete features.
-        "charliermarsh.ruff", => This extension provides support for the Ruff database migration tool.
-        "ms-python.black-formatter", =>  This extension provides support for the Black code formatter for Python.
-        "mtxr.sqltools", => General-purpose SQL extension that provides features(syntax highlighting, code completion, and database management.)
-        "mtxr.sqltools-driver-pg", => This is a PostgreSQL driver for the SQL Tools extension.
-        "ms-vscode.vscode-node-azure-pack" => Provides support for developing and deploying Node.js applications to Azure.
-    
-    Configuring SQLTools extension:
-        "sqltools.connections": [
-            {
-                "name": "Local database",
-                "driver": "PostgreSQL",
-                "server": "localhost",
-                "port": 5432,
-                "database": "postgres",
-                "username": "admin",
-                "password": "LocalPasswordOnly"
-            },
-            {
