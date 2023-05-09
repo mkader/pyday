@@ -266,4 +266,6 @@ More API Examples
 
 ![alt text](fastapi_azure.PNG)
        
-Next follow PostgreSQL - https://github.com/mkader/postgresql
+Next 
+    PostgreSQL - https://github.com/mkader/postgresql
+    Writing Django Apps Django framework  - https://github.com/mkader/python_django_postgresql_azure_app
