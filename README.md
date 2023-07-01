@@ -8,105 +8,100 @@ pip install urllib3 rich fastapi "uvicorn[standard]"
 
 Processing APIs in python use urllib, requests or urllib3
 
-    PoolManager is a class in the urllib3 library used to manage connection pools for one or more HTTP connections. 
-    It is used to create an instance of an HTTP connection pool with a specified number of connections. 
-    You can use this instance to send multiple requests to the same host and reuse the same connection for each request, 
+* **PoolManager** is a class in the urllib3 library used to manage connection pools for one or more HTTP connections. 
+    * It is used to create an instance of an HTTP connection pool with a specified number of connections. 
+    * You can use this instance to send multiple requests to the same host and reuse the same connection for each request, 
     which can result in faster response times and reduced overhead.
 
-    rich is a Python library for rich text and beautiful formatting in the terminal. 
-    It provides various features such as syntax highlighting, progress bars, tables, markdown, and more. 
-    It aims to make it easier to create beautiful and informative console output. It supports both Python 3.6+ and PyPy3.
+* **Rich** is a Python library for rich text and beautiful formatting in the terminal. 
+    * It provides various features such as syntax highlighting, progress bars, tables, markdown, and more. 
+    * It aims to make it easier to create beautiful and informative console output. It supports both Python 3.6+ and PyPy3.
 
-FastAPI - https://fastapi.tiangolo.com/
-    FastAPI is a web framework for building APIs with Python 3.7+. It is designed to be easy, fast and to provide high performance.
+* **FastAPI** - https://fastapi.tiangolo.com/
+    * FastAPI is a web framework for building APIs with Python 3.7+. It is designed to be easy, fast and to provide high performance.
+    * It uses the Python type hinting system to validate data types and function parameters, which makes it write and maintain type-safe APIs.
+    * FastAPI is a lightweight ASGI (Asynchronous Server Gateway Interface) framework, compatible with a wide range of ASGI servers such as Uvicorn and Hypercorn, which provide high-performance web servers.
+    * It contains a built-in OpenAPI and JSON Schema generator, which allows to generate API documentation and client libraries. Additionally, It has built-in support for testing and debugging your API.
 
-    It uses the Python type hinting system to validate data types and function parameters, which makes it write and maintain type-safe APIs.
+    * **FastAPI is a python framework designed specifically for building HTTP APIs.**
+        * Fast to build and fast to execute
+        * Relies on python types (via pydnatic)
+        * Auto-generated documentation (via Swagger-UI)
+        * Based on the OpenAPI specifications.
+        * Supports passing parameters in the path, cookies, headers or body.
 
-    FastAPI is a lightweight ASGI (Asynchronous Server Gateway Interface) framework, compatible with a wide range of ASGI servers such as Uvicorn and Hypercorn, which provide high-performance web servers.
-
-    It contains a built-in OpenAPI and JSON Schema generator, which allows to generate API documentation and client libraries. Additionally, It has built-in support for testing and debugging your API.
-
-    FastAPI is a python framework designed specifically for building HTTP APIs.
-        Fast to build and fast to execute
-        Relies on python types (via pydnatic)
-        Auto-generated documentation (via Swagger-UI)
-        Based on the OpenAPI specifications.
-        Supports passing parameters in the path, cookies, headers or body.
-
-    Running FastAPI locally
-        Put code in api/main.py
-        Run the server: uvicorn  api.main:app --reload --port=8000
-            api.main:app specifies the module and the variable name of the application that needs to be run.
-            --reload enables hot-reloading, any code changes, the server will restart automatically.
-            --port=8000, which the server will be listening for incoming requests.
+    * **Running FastAPI locally**
+        * Put code in api/main.py
+        * Run the server: uvicorn  api.main:app --reload --port=8000
+            * api.main:app specifies the module and the variable name of the application that needs to be run.
+            * --reload enables hot-reloading, any code changes, the server will restart automatically.
+            * --port=8000, which the server will be listening for incoming requests.
         
-        Try the API and docs : http://127.0.0.1:8000/generate_name
-                               http://127.0.0.1:8000/docs   
-                               http://127.0.0.1:8000/redoc
-                               http://127.0.0.1:8000/openapi.json 
+        * Try the API and docs : http://127.0.0.1:8000/generate_name, http://127.0.0.1:8000/docs, http://127.0.0.1:8000/redoc, http://127.0.0.1:8000/openapi.json 
 
-Testing FastAPI apps
-    Configuring pytest and coverage
-        Create a requirements-dev.txt file:
-            -r api/requirements.txt
-            fastapi[all]
-            pytest
-            pytest-cov
-            coverage
+* **Testing FastAPI apps**
+    * Configuring pytest and coverage
+        * Create a requirements-dev.txt file:
+            * -r api/requirements.txt
+            * fastapi[all]
+            * pytest
+            * pytest-cov
+            * coverage
 
-            "-r api/requirements.txt" flag,install the required Python packages listed in the api/requirements.txt file.
-            "fastapi[all]" package, installs FastAPI with all dependencies (Uvicorn, Pydantic and other libraries)
-            "pytest" package is a testing framework that allows you to write and run automated tests for your Python code.
-            "pytest-cov" package is a plugin for pytest that provides code coverage reports for your tests.
-            "coverage" package is a tool that measures code coverage during Python program execution.
+            * "-r api/requirements.txt" flag,install the required Python packages listed in the api/requirements.txt file.
+            * "fastapi[all]" package, installs FastAPI with all dependencies (Uvicorn, Pydantic and other libraries)
+            * "pytest" package is a testing framework that allows you to write and run automated tests for your Python code.
+            * "pytest-cov" package is a plugin for pytest that provides code coverage reports for your tests.
+            * "coverage" package is a tool that measures code coverage during Python program execution.
 
-        Configure inside pyproject.toml
-            [tool.pytest.ini_options]
-            addopts = "-ra --cov api"
-            testpaths = [ "tests" ]
-            pythonpath = ['.']    
+        * **Configure inside pyproject.toml**
+            * [tool.pytest.ini_options]
+            * addopts = "-ra --cov api"
+            * testpaths = [ "tests" ]
+            * pythonpath = ['.']    
 
-            pyproject.toml is a configuration file used by modern Python projects that adopt the poetry build tool. It is similar to other configuration files like setup.cfg, setup.py, or requirements.txt, but with additional features and functionalities.
-                "[tool.pytest.ini_options]" - contains additional configuration options to pass to pytest, a popular Python testing framework.
-                "addopts" - specifies additional command-line options to pass to pytest. 
-                    "-ra" tells pytest to output all test results
-                    "--cov api" enables test coverage reporting for the api module.
-                "testpaths" -specifies directories tests (containing all tests).
-                "pythonpath" - specifies which directories to include in the Python module search path. In this case, . (the current directory) is included, so that modules in the current directory can be imported and used in the tests.
+            * **pyproject.toml is a configuration file** used by modern Python projects that adopt the poetry build tool. It is similar to other configuration files like setup.cfg, setup.py, or requirements.txt, but with additional features and functionalities.
+                * "[tool.pytest.ini_options]" - contains additional configuration options to pass to pytest, a popular Python testing framework.
+                * "addopts" - specifies additional command-line options to pass to pytest. 
+                    * "-ra" tells pytest to output all test results
+                    * "--cov api" enables test coverage reporting for the api module.
+                * "testpaths" -specifies directories tests (containing all tests).
+                * "pythonpath" - specifies which directories to include in the Python module search path. In this case, . (the current directory) is included, so that modules in the current directory can be imported and used in the tests.
 
-    Create folde and file - "tests\test_api.py"        
-    pip install -r requirements-dev.txt
-    python -m pytest
-        - Name          Stmts   Miss  Cover
-        ---------------------------------
-        api/main.py      19      9    53%
-        - not giving missing lines details
-    python -m pytest --cov-report=html
-        - it will create folder htmlcov
-        - go to the folder, run python3 -m http.server 8000 --bind 127.0.0.1
-        - browse to see the coverage report https://127.0.0.1/htmlcov/index.html
+    * Create folde and file - "tests\test_api.py"        
+    * pip install -r requirements-dev.txt
+    * python -m pytest
+        Name | Stmts | Miss | Cover
+        -|-|-|-
+        api/main.py | 19 | 9 |53%
+        * not giving missing lines details
+    * python -m pytest --cov-report=html
+        * it will create folder htmlcov
+        * go to the folder, run python3 -m http.server 8000 --bind 127.0.0.1
+        * browse to see the coverage report https://127.0.0.1/htmlcov/index.html
 
-Property-based tests with schemathesis
-    Property-based testing is a type of testing approach that focuses on generating a large number of random inputs to test functions and APIs. Instead of manually creating test, the testing framework generates automatically, based on predefined properties.
+* **Property-based tests with schemathesis**
+    * Property-based testing is a type of testing approach that focuses on generating a large number of random inputs to test functions and APIs. Instead of manually creating test, the testing framework generates automatically, based on predefined properties.
 
-    Schemathesis is a Python library for property-based testing of APIs. It automatically generates API test cases based on their OpenAPI schema (Swagger). IT generates a large number of random requests to the API and checking that the responses match the expected schema.
+    * Schemathesis is a Python library for property-based testing of APIs. It automatically generates API test cases based on their OpenAPI schema (Swagger). IT generates a large number of random requests to the API and checking that the responses match the expected schema.
 
-    Schemathesis also has various features like test coverage analysis, response time tracking, and compatibility with different Python testing frameworks like pytest.
+    * Schemathesis also has various features like test coverage analysis, response time tracking, and compatibility with different Python testing frameworks like pytest.
 
-    By using schemathesis, developers can perform thorough testing of their APIs with minimal manual effort, which can lead to more reliable and bug-free code. It's useful for ensuring that your API is robust and can handle a variety of inputs and outputs.
+    * By using schemathesis, developers can perform thorough testing of their APIs with minimal manual effort, which can lead to more reliable and bug-free code. It's useful for ensuring that your API is robust and can handle a variety of inputs and outputs.
 
-    Add schemathesis to requirments-dev.txt
+    * Add schemathesis to requirments-dev.txt
         
-    Generaete tests based on the OpenAPI Spec: ("tests\property_based.py")
-        import schemathesis
-        from api.main import app
-        schema = schemathesis.from_asqi("/openapi.json",app)
-        
-        #schema.parametrize()
-        def test_api():
-            response = case.call_asqi()
-            case.validate_response(response)
-
+    * Generaete tests based on the OpenAPI Spec: ("tests\property_based.py")
+        ``` mark
+            import schemathesis
+            from api.main import app
+            schema = schemathesis.from_asqi("/openapi.json",app)
+            
+            #schema.parametrize()
+            def test_api():
+                response = case.call_asqi()
+                case.validate_response(response)
+        ```
     pip install -r requirements-dev.txt
 
     Run the tests
